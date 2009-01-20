@@ -1,0 +1,24 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2ddl</name>
+              <outputDirectory>target/hibernate3/sql-jpa</outputDirectory>
+              <implementation>jpaconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <persistenceunit>ejb3test</persistenceunit>
+            <export>false</export>
+            <outputfilename>schema.sql</outputfilename>
+          </componentProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

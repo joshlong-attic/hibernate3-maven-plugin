@@ -1,0 +1,25 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2ddl</name>
+              <outputDirectory>target/hibernate3/sql-ann</outputDirectory>
+              <implementation>annotationconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <configurationfile>target/test-classes/annotationconfiguration/hibernate.cfg.xml</configurationfile>
+            <ejb3>true</ejb3>
+            <export>false</export>
+            <outputfilename>schema.sql</outputfilename>
+          </componentProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

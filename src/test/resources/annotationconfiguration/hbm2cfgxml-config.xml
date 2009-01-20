@@ -1,0 +1,23 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2cfgxml</name>
+              <outputDirectory>target/hibernate3/generated-mappings-ann</outputDirectory>
+              <implementation>annotationconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <configurationfile>target/test-classes/annotationconfiguration/hibernate.cfg.xml</configurationfile>
+            <ejb3>true</ejb3>
+          </componentProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

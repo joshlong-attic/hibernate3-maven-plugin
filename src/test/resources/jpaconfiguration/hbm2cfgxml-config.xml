@@ -1,0 +1,22 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2cfgxml</name>
+              <outputDirectory>target/hibernate3/generated-mappings-jpa</outputDirectory>
+              <implementation>jpaconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <persistenceunit>ejb3test</persistenceunit>
+          </componentProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

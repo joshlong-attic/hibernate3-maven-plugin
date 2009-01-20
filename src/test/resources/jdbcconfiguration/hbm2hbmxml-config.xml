@@ -1,0 +1,23 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2hbmxml</name>
+              <outputDirectory>target/hibernate3/generated-mappings-jdbc</outputDirectory>
+              <implementation>jdbcconfiguration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <configurationfile>target/test-classes/jdbcconfiguration/hibernate.cfg.xml</configurationfile>
+            <packagename>jdbcconfiguration</packagename>
+          </componentProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,23 @@
+<project>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>hibernate3-maven-plugin</artifactId>
+        <configuration>
+          <components>
+            <component>
+              <name>hbm2doc</name>
+              <outputDirectory>target/hibernate3/javadoc-conf</outputDirectory>
+              <implementation>configuration</implementation>
+            </component>
+          </components>
+          <componentProperties>
+            <configurationfile>target/test-classes/configuration/hibernate.cfg.xml</configurationfile>
+            <scan-classes>true</scan-classes>
+          </componentProperties>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

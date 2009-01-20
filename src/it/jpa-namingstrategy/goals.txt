@@ -1,0 +1,1 @@
+clean compile hibernate3:hbm2ddl verifier:verify

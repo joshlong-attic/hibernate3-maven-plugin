@@ -16,36 +16,40 @@ package org.codehaus.mojo.hibernate3;
  * limitations under the License.
  */
 
-import org.apache.maven.plugin.MojoExecutionException;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.hibernate3.configuration.ComponentConfiguration;
 import org.codehaus.mojo.hibernate3.exporter.Component;
+import org.codehaus.mojo.hibernate3.processor.GeneratedClassDefinitionProcessor;
+import org.codehaus.mojo.hibernate3.processor.NoOpGeneratedClassDefinitionProcessor;
 import org.hibernate.tool.hbm2x.Exporter;
+import org.hibernate.tool.hbm2x.StringUtils;
+import org.springframework.aop.framework.ProxyFactoryBean;
 
-import java.util.List;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.net.URLClassLoader;
+import java.io.*;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.io.File;
+import java.net.URLClassLoader;
+import java.util.*;
 
 /**
  * Base class for the different hibernate3 goals based on the Ant tasks of hibernate tools.
  *
  * @author <a href="mailto:jreyes@hiberforum.org">Johann Reyes</a>
  * @author <a href="mailto:tobrien@codehaus.org">Tim O'Brien</a>
+ * @author Josh Long
  * @version $Id$
  * @requiresDependencyResolution test
  */
 public abstract class HibernateExporterMojo
-    extends AbstractMojo
-    implements ExporterMojo
-{
+        extends AbstractMojo
+        implements ExporterMojo {
 // ------------------------------ FIELDS ------------------------------
 
     /**
@@ -94,8 +98,7 @@ public abstract class HibernateExporterMojo
     /**
      * @see ExporterMojo#getProject()
      */
-    public MavenProject getProject()
-    {
+    public MavenProject getProject() {
         return project;
     }
 
@@ -107,25 +110,20 @@ public abstract class HibernateExporterMojo
     /**
      * @see ExporterMojo#getComponentProperty(String)
      */
-    public String getComponentProperty( String key )
-    {
-        return getComponentProperty( key, null );
+    public String getComponentProperty(String key) {
+        return getComponentProperty(key, null);
     }
 
     /**
-     * @see ExporterMojo#getComponentProperty(String,boolean)
+     * @see ExporterMojo#getComponentProperty(String, boolean)
      */
-    public boolean getComponentProperty( String key, boolean defaultValue )
-    {
-        String s = getComponentProperty( key );
-        if ( s == null )
-        {
+    public boolean getComponentProperty(String key, boolean defaultValue) {
+        String s = getComponentProperty(key);
+        if (s == null) {
             return defaultValue;
-        }
-        else
-        {
+        } else {
             //noinspection UnnecessaryUnboxing
-            return Boolean.valueOf( s ).booleanValue();
+            return Boolean.valueOf(s).booleanValue();
         }
     }
 
@@ -134,27 +132,19 @@ public abstract class HibernateExporterMojo
     /**
      * @see org.apache.maven.plugin.Mojo#execute()
      */
-    public void execute()
-        throws MojoExecutionException, MojoFailureException
-    {
+    public void execute() throws MojoExecutionException, MojoFailureException {
         Thread currentThread = Thread.currentThread();
         ClassLoader oldClassLoader = currentThread.getContextClassLoader();
 
-        try
-        {
-            currentThread.setContextClassLoader( getClassLoader() );
-            if ( getComponentProperty( "skip", false ) )
-            {
-                getLog().info( "skipping hibernate3 execution" );
-            }
-            else
-            {
+        try {
+            currentThread.setContextClassLoader(getClassLoader());
+            if (getComponentProperty("skip", false)) {
+                getLog().info("skipping hibernate3 execution");
+            } else {
                 doExecute();
             }
-        }
-        finally
-        {
-            currentThread.setContextClassLoader( oldClassLoader );
+        } finally {
+            currentThread.setContextClassLoader(oldClassLoader);
         }
     }
 
@@ -168,13 +158,12 @@ public abstract class HibernateExporterMojo
      * @param jdk5            Is this goal being setup for jdk15?
      * @noinspection unchecked
      */
-    protected void addDefaultComponent( String outputDirectory, String implementation, boolean jdk5 )
-    {
+    protected void addDefaultComponent(String outputDirectory, String implementation, boolean jdk5) {
         Component component = new Component();
-        component.setName( getName() );
-        component.setOutputDirectory( outputDirectory );
-        component.setImplementation( implementation );
-        defaultComponents.put( ( jdk5 ) ? "jdk15" : "jdk14", component );
+        component.setName(getName());
+        component.setOutputDirectory(outputDirectory);
+        component.setImplementation(implementation);
+        defaultComponents.put(jdk5 ? "jdk15" : "jdk14", component);
     }
 
     /**
@@ -185,39 +174,40 @@ public abstract class HibernateExporterMojo
      * @throws MojoExecutionException if there is an error configuring the exporter
      * @noinspection unchecked
      */
-    protected Exporter configureExporter( Exporter exporter )
-        throws MojoExecutionException
-    {
-        String implementation = getComponentProperty( "implementation", getComponent().getImplementation() );
+    protected Exporter configureExporter(Exporter exporter) throws MojoExecutionException {
 
-        ComponentConfiguration componentConfiguration = getComponentConfiguration( implementation );
-        getLog().info( "using " + componentConfiguration.getName() + " task." );
+        String implementation = getComponentProperty("implementation", getComponent().getImplementation());
+
+        ComponentConfiguration componentConfiguration = getComponentConfiguration(implementation);
+        getLog().info("using " + componentConfiguration.getName() + " task.");
 
         Properties properties = new Properties();
-        properties.putAll( componentProperties );
+        properties.putAll(componentProperties);
 
-        exporter.setProperties( properties );
-        exporter.setConfiguration( componentConfiguration.getConfiguration( this ) );
-        exporter.setOutputDirectory( new File( getProject().getBasedir(), getComponent().getOutputDirectory() ) );
+        exporter.setProperties(properties);
+        exporter.setConfiguration(componentConfiguration.getConfiguration(this));
+        exporter.setOutputDirectory(new File(getProject().getBasedir(), getComponent().getOutputDirectory()));
 
-        File outputDir = new File( getProject().getBasedir(), getComponent().getOutputDirectory() );
-        if ( getComponent().isCompileSourceRoot() )
-        {
+        File outputDir = getExporterOutputDir();
+        if (getComponent().isCompileSourceRoot()) {
             // add output directory to compile roots
-            getProject().addCompileSourceRoot( outputDir.getPath() );
+            getProject().addCompileSourceRoot(outputDir.getPath());
         }
 
         // now let's set the template path for custom templates if the directory exists
         // template path would need to be found inside the project directory
-        String templatePath = getComponentProperty( "templatepath", "/src/main/config/templates" );
-        File templatePathDir = new File( getProject().getBasedir(), templatePath );
-        if ( templatePathDir.exists() && templatePathDir.isDirectory() )
-        {
-            getLog().info( "Exporter will use templatepath : " + templatePathDir.getPath() );
-            exporter.setTemplatePath( new String[]{templatePathDir.getPath()} );
+        String templatePath = getComponentProperty("templatepath", "/src/main/config/templates");
+        File templatePathDir = new File(getProject().getBasedir(), templatePath);
+        if (templatePathDir.exists() && templatePathDir.isDirectory()) {
+            getLog().info("Exporter will use templatepath : " + templatePathDir.getPath());
+            exporter.setTemplatePath(new String[]{templatePathDir.getPath()});
         }
 
         return exporter;
+    }
+
+    protected File getExporterOutputDir() {
+        return new File(getProject().getBasedir(), getComponent().getOutputDirectory());
     }
 
     /**
@@ -228,28 +218,23 @@ public abstract class HibernateExporterMojo
      * @throws MojoExecutionException if there is an error finding the ConfigurationTask
      * @noinspection ForLoopReplaceableByForEach
      */
-    protected ComponentConfiguration getComponentConfiguration( String name )
-        throws MojoExecutionException
-    {
-        for ( Iterator it = componentConfigurations.iterator(); it.hasNext(); )
-        {
+    protected ComponentConfiguration getComponentConfiguration(String name)
+            throws MojoExecutionException {
+        for (Iterator it = componentConfigurations.iterator(); it.hasNext(); ) {
             ComponentConfiguration componentConfiguration = (ComponentConfiguration) it.next();
-            if ( componentConfiguration.getName().equals( name ) )
-            {
+            if (componentConfiguration.getName().equals(name)) {
                 return componentConfiguration;
             }
         }
-        throw new MojoExecutionException( "Could not get ConfigurationTask." );
+        throw new MojoExecutionException("Could not get ConfigurationTask.");
     }
 
     /**
-     * @see ExporterMojo#getComponentProperty(String,String)
+     * @see ExporterMojo#getComponentProperty(String, String)
      */
-    public String getComponentProperty( String key, String defaultValue )
-    {
-        String value = (String) componentProperties.get( key );
-        if ( value == null || "".equals( value.trim() ) )
-        {
+    public String getComponentProperty(String key, String defaultValue) {
+        String value = (String) componentProperties.get(key);
+        if (value == null || "".equals(value.trim())) {
             return defaultValue;
         }
         return value;
@@ -266,11 +251,115 @@ public abstract class HibernateExporterMojo
      * Executes the plugin in an isolated classloader.
      *
      * @throws MojoExecutionException When there is an erro executing the plugin
+     * @noinspection unchecked
      */
-    protected void doExecute()
-        throws MojoExecutionException
-    {
-        configureExporter( createExporter() ).start();
+    protected void doExecute() throws MojoExecutionException {
+        Exporter exporter = configureExporter(createExporter());
+        exporter.start();
+    }
+
+    protected void handleProcessor() throws Throwable {
+        String clzzNameForProcessor = getComponentProperty("processor", NoOpGeneratedClassDefinitionProcessor.class.getName());
+
+
+        if (!StringUtils.isEmpty(clzzNameForProcessor)) {
+            // then create the class
+            try {
+
+
+                Class<? extends GeneratedClassDefinitionProcessor> processorClazz =
+                        (Class<? extends GeneratedClassDefinitionProcessor>) Class.forName(clzzNameForProcessor);
+
+                getLog().debug("using processor class " + processorClazz);
+
+                GeneratedClassDefinitionProcessor processObj = processorClazz.newInstance();
+
+                File file = getExporterOutputDir();
+                /*File javaFiles[] = file.listFiles(new FileFilter() {
+                    public boolean accept(File file) {
+                        return (file.getName().toLowerCase().endsWith(".java"));
+                    }
+                });*/
+
+                Iterator<File>  javaFiles=FileUtils.iterateFiles( getExporterOutputDir(), new String[]{".java"}, true) ;
+
+
+                System.out.println( " output: "+ file.getAbsolutePath() + ":" );
+
+
+
+                while(javaFiles.hasNext()){
+                    File f = javaFiles.next();
+
+                    System.out.println("processing file "+ f.getAbsolutePath());
+
+                    InputStream inputStream = null;
+                    OutputStream outputStream = null;
+                    try {
+                        inputStream = new FileInputStream(f);
+                        outputStream = new FileOutputStream(f);
+                        String contents = IOUtils.toString(inputStream);
+
+                        String result = processObj.processClass(f, contents);
+
+                        getLog().debug("just processed " + f.getAbsolutePath() + ":" + result);
+
+                        IOUtils.write(result, outputStream);
+                    } finally {
+                        if (null != inputStream) {
+                            IOUtils.closeQuietly(inputStream);
+                        }
+                        if (null != outputStream) {
+                            IOUtils.closeQuietly(outputStream);
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                getLog().error("couldn't load and delegate to the processor class configured, " + clzzNameForProcessor + ".");
+            }
+        } else {
+            getLog().error("No processor configured, aborting.");
+        }
+    }
+
+    /**
+     * Builds a proxy that will respect any configured processor instance if configured. This should only be called on subclasses that end up generated java classes.
+     *
+     * @param delegate the original Exporter
+     * @return an Exporter proxy that will correctly give the processor objects a chance to run after the delegate exporters' start() method's been called.
+     */
+    protected Exporter buildProcessorAwareExporter(final Exporter delegate) {
+
+        MethodInterceptor interceptor = new MethodInterceptor() {
+            @Override
+            public Object invoke(MethodInvocation invocation) throws Throwable {
+                Method method = invocation.getMethod();
+                Object[] objects = invocation.getArguments();
+
+                Object result;
+                try {
+                    result = method.invoke(delegate, objects);
+                    if (method.getName().contains("start")) {
+                        handleProcessor();
+                    }
+                    return result;
+                } catch (Throwable throwable) {
+                    getLog().error(throwable);
+                }
+                return null;
+
+
+            }
+        };
+
+        ProxyFactoryBean bean = new ProxyFactoryBean();
+        bean.addAdvice(interceptor);
+        bean.setProxyTargetClass(true);
+        bean.setBeanClassLoader(delegate.getClass().getClassLoader());
+        bean.setAutodetectInterfaces(true);
+        bean.setTarget(delegate);
+        return (Exporter) bean.getObject();
     }
 
     /**
@@ -279,23 +368,18 @@ public abstract class HibernateExporterMojo
      * @return ClassLoader
      * @noinspection unchecked
      */
-    private ClassLoader getClassLoader()
-    {
-        try
-        {
+    private ClassLoader getClassLoader() {
+        try {
             List classpathElements = project.getCompileClasspathElements();
-            classpathElements.add( project.getBuild().getOutputDirectory() );
-            classpathElements.add( project.getBuild().getTestOutputDirectory() );
+            classpathElements.add(project.getBuild().getOutputDirectory());
+            classpathElements.add(project.getBuild().getTestOutputDirectory());
             URL urls[] = new URL[classpathElements.size()];
-            for ( int i = 0; i < classpathElements.size(); ++i )
-            {
-                urls[i] = new File( (String) classpathElements.get( i ) ).toURL();
+            for (int i = 0; i < classpathElements.size(); ++i) {
+                urls[i] = new File((String) classpathElements.get(i)).toURL();
             }
-            return new URLClassLoader( urls, this.getClass().getClassLoader() );
-        }
-        catch ( Exception e )
-        {
-            getLog().debug( "Couldn't get the classloader." );
+            return new URLClassLoader(urls, this.getClass().getClassLoader());
+        } catch (Exception e) {
+            getLog().debug("Couldn't get the classloader.");
             return this.getClass().getClassLoader();
         }
     }
@@ -306,31 +390,24 @@ public abstract class HibernateExporterMojo
      * @return Component
      * @noinspection ForLoopReplaceableByForEach
      */
-    protected Component getComponent()
-    {
-        Component defaultGoal = (Component) defaultComponents.get( HibernateUtils.getJavaVersion() );
-        if ( !components.isEmpty() )
-        {
+    protected Component getComponent() {
+        Component defaultGoal = (Component) defaultComponents.get(HibernateUtils.getJavaVersion());
+        if (!components.isEmpty()) {
             // add an alias to the report goal
             String name = getName();
-            if ( "report".equals( name ) )
-            {
+            if ("report".equals(name)) {
                 name = "hbm2doc";
             }
 
             // now iterate throught the goals
-            for ( Iterator it = components.iterator(); it.hasNext(); )
-            {
+            for (Iterator it = components.iterator(); it.hasNext(); ) {
                 Component component = (Component) it.next();
-                if ( name.equals( component.getName() ) )
-                {
-                    if ( component.getImplementation() == null )
-                    {
-                        component.setImplementation( defaultGoal.getImplementation() );
+                if (name.equals(component.getName())) {
+                    if (component.getImplementation() == null) {
+                        component.setImplementation(defaultGoal.getImplementation());
                     }
-                    if ( component.getOutputDirectory() == null )
-                    {
-                        component.setOutputDirectory( defaultGoal.getOutputDirectory() );
+                    if (component.getOutputDirectory() == null) {
+                        component.setOutputDirectory(defaultGoal.getOutputDirectory());
                     }
                     return component;
                 }

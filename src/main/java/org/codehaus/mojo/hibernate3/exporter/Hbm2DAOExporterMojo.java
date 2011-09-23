@@ -16,28 +16,26 @@ package org.codehaus.mojo.hibernate3.exporter;
  * limitations under the License.
  */
 
-import org.hibernate.tool.hbm2x.Exporter;
 import org.hibernate.tool.hbm2x.DAOExporter;
+import org.hibernate.tool.hbm2x.Exporter;
 
 /**
  * Base class for the different hibernate3 goals based on the Ant tasks of hibernate tools.
  *
  * @author <a href="mailto:jreyes@hiberforum.org">Johann Reyes</a>
+ * @author Josh Long
  * @version $Id$
  * @goal hbm2dao
  * @phase generate-sources
  * @execute phase="process-resources"
  */
-public class Hbm2DAOExporterMojo
-    extends Hbm2JavaGeneratorMojo
-{
+public class Hbm2DAOExporterMojo extends Hbm2JavaGeneratorMojo {
     /**
      * Default constructor.
      */
-    public Hbm2DAOExporterMojo()
-    {
-        addDefaultComponent( "target/hibernate3/generated-sources", "configuration", false );
-        addDefaultComponent( "target/hibernate3/generated-sources", "annotationconfiguration", true );
+    public Hbm2DAOExporterMojo() {
+        addDefaultComponent("target/hibernate3/generated-sources", "configuration", false);
+        addDefaultComponent("target/hibernate3/generated-sources", "annotationconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------
@@ -47,8 +45,7 @@ public class Hbm2DAOExporterMojo
      *
      * @return String goal's name
      */
-    public String getName()
-    {
+    public String getName() {
         return "hbm2dao";
     }
 
@@ -57,8 +54,7 @@ public class Hbm2DAOExporterMojo
      *
      * @return DAOExporter
      */
-    protected Exporter createExporter()
-    {
-        return new DAOExporter();
+    protected Exporter createExporter() {
+        return buildProcessorAwareExporter( new DAOExporter());
     }
 }

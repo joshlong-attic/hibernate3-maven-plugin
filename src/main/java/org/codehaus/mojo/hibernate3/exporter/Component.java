@@ -26,10 +26,9 @@ import java.io.Serializable;
  * @version $Id$
  */
 public final class Component
-    implements Serializable
-{
+        implements Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -47,19 +46,18 @@ public final class Component
      * Output directory for this goal implementation.
      */
     private String outputDirectory;
-    
+
     /**
      * Is the output directory a compile source root
      */
     private boolean compileSourceRoot = false;
-    
+
     /**
      * Returns the alias of the Configuration class that this goal uses.
      *
      * @return String
      */
-    public String getImplementation()
-    {
+    public String getImplementation() {
         return implementation;
     }
 
@@ -68,8 +66,7 @@ public final class Component
      *
      * @param implementation String
      */
-    public void setImplementation( String implementation )
-    {
+    public void setImplementation(String implementation) {
         this.implementation = implementation;
     }
 
@@ -78,8 +75,7 @@ public final class Component
      *
      * @return String
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
@@ -88,8 +84,7 @@ public final class Component
      *
      * @param name String
      */
-    public void setName( String name )
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -98,8 +93,7 @@ public final class Component
      *
      * @return String
      */
-    public String getOutputDirectory()
-    {
+    public String getOutputDirectory() {
         return outputDirectory;
     }
 
@@ -108,20 +102,19 @@ public final class Component
      *
      * @param outputDirectory String
      */
-    public void setOutputDirectory( String outputDirectory )
-    {
+    public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
 
     /**
      * Returns whether the output directory is a compile source
      * root.
-     * 
+     *
      * @return boolean
      */
-	public boolean isCompileSourceRoot() {
-		return compileSourceRoot;
-	}
+    public boolean isCompileSourceRoot() {
+        return compileSourceRoot;
+    }
 
     /**
      * Sets whether the output directory is a compile source
@@ -129,8 +122,8 @@ public final class Component
      *
      * @param isCompileSourceRoot boolean
      */
-	public void setCompileSourceRoot(boolean isCompileSourceRoot) {
-		this.compileSourceRoot = isCompileSourceRoot;
-	}
-    
+    public void setCompileSourceRoot(boolean isCompileSourceRoot) {
+        this.compileSourceRoot = isCompileSourceRoot;
+    }
+
 }

@@ -8,8 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import java.util.HashMap;
 
 public class PersonTest
-    extends TestCase
-{
+        extends TestCase {
 // ------------------------------ FIELDS ------------------------------
 
     protected Ejb3Configuration configuration;
@@ -18,45 +17,35 @@ public class PersonTest
 
     @Override
     protected void setUp()
-        throws Exception
-    {
-        if ( configuration == null )
-        {
+            throws Exception {
+        if (configuration == null) {
             configuration = new Ejb3Configuration();
-            configuration.configure( "ejb3test", new HashMap() );
+            configuration.configure("ejb3test", new HashMap());
         }
     }
 
     @Override
     protected void tearDown()
-        throws Exception
-    {
+            throws Exception {
         super.tearDown();
         configuration = null;
     }
 
-    public void testPersist1()
-    {
+    public void testPersist1() {
         EntityManagerFactory emf = configuration.buildEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
 
         Person person = new Person();
-        person.setId( (long) 1 );
+        person.setId((long) 1);
 
-        try
-        {
+        try {
             em.getTransaction().begin();
-            em.persist( person );
+            em.persist(person);
             em.getTransaction().commit();
-        }
-        catch ( IllegalStateException e )
-        {
-            fail( e.getMessage() );
-        }
-        finally
-        {
-            if ( em.getTransaction() != null && em.getTransaction().isActive() )
-            {
+        } catch (IllegalStateException e) {
+            fail(e.getMessage());
+        } finally {
+            if (em.getTransaction() != null && em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
             em.close();
@@ -64,28 +53,21 @@ public class PersonTest
         }
     }
 
-    public void testPersist2()
-    {
+    public void testPersist2() {
         EntityManagerFactory emf = configuration.buildEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
 
         Person person = new Person();
-        person.setId( (long) 2 );
+        person.setId((long) 2);
 
-        try
-        {
+        try {
             em.getTransaction().begin();
-            em.persist( person );
+            em.persist(person);
             em.getTransaction().commit();
-        }
-        catch ( IllegalStateException e )
-        {
-            fail( e.getMessage() );
-        }
-        finally
-        {
-            if ( em.getTransaction() != null && em.getTransaction().isActive() )
-            {
+        } catch (IllegalStateException e) {
+            fail(e.getMessage());
+        } finally {
+            if (em.getTransaction() != null && em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
             em.close();
@@ -93,28 +75,21 @@ public class PersonTest
         }
     }
 
-    public void testPersist3()
-    {
+    public void testPersist3() {
         EntityManagerFactory emf = configuration.buildEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
 
         Person person = new Person();
-        person.setId( (long) 3 );
+        person.setId((long) 3);
 
-        try
-        {
+        try {
             em.getTransaction().begin();
-            em.persist( person );
+            em.persist(person);
             em.getTransaction().commit();
-        }
-        catch ( IllegalStateException e )
-        {
-            fail( e.getMessage() );
-        }
-        finally
-        {
-            if ( em.getTransaction() != null && em.getTransaction().isActive() )
-            {
+        } catch (IllegalStateException e) {
+            fail(e.getMessage());
+        } finally {
+            if (em.getTransaction() != null && em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
             em.close();

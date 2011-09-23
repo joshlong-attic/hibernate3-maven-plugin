@@ -16,9 +16,9 @@ package org.codehaus.mojo.hibernate3.exporter;
  * limitations under the License.
  */
 
+import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
 import org.hibernate.tool.hbm2x.DocExporter;
 import org.hibernate.tool.hbm2x.Exporter;
-import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
 
 /**
  * Generates HTML documentation for the database schema.
@@ -28,15 +28,13 @@ import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
  * @goal hbm2doc
  */
 public class Hbm2DocExporterMojo
-    extends HibernateExporterMojo
-{
+        extends HibernateExporterMojo {
     /**
      * Default constructor.
      */
-    public Hbm2DocExporterMojo()
-    {
-        addDefaultComponent( "target/hibernate3/javadoc", "configuration", false );
-        addDefaultComponent( "target/hibernate3/javadoc", "annotationconfiguration", true );
+    public Hbm2DocExporterMojo() {
+        addDefaultComponent("target/hibernate3/javadoc", "configuration", false);
+        addDefaultComponent("target/hibernate3/javadoc", "annotationconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------
@@ -47,8 +45,7 @@ public class Hbm2DocExporterMojo
      * @return String goal's name
      */
 
-    public String getName()
-    {
+    public String getName() {
         return "hbm2doc";
     }
 
@@ -57,8 +54,7 @@ public class Hbm2DocExporterMojo
      *
      * @return DocExporter
      */
-    public final Exporter createExporter()
-    {
+    public final Exporter createExporter() {
         return new DocExporter();
     }
 }

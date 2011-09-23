@@ -16,11 +16,11 @@ package org.codehaus.mojo.hibernate3.exporter;
  * limitations under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
 import org.codehaus.mojo.hibernate3.HibernateUtils;
 import org.hibernate.tool.hbm2x.Exporter;
 import org.hibernate.tool.hbm2x.GenericExporter;
-import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Generic exporter that can be controlled by a user provided template or class.
@@ -30,17 +30,15 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @goal hbmtemplate
  */
 public class GenericExporterMojo
-    extends HibernateExporterMojo
-{
+        extends HibernateExporterMojo {
 // --------------------------- CONSTRUCTORS ---------------------------
 
     /**
      * Default constructor.
      */
-    public GenericExporterMojo()
-    {
-        addDefaultComponent( "target/hibernate3/generic", "jdbcconfiguration", false );
-        addDefaultComponent( "target/hibernate3/generic", "jdbcconfiguration", true );
+    public GenericExporterMojo() {
+        addDefaultComponent("target/hibernate3/generic", "jdbcconfiguration", false);
+        addDefaultComponent("target/hibernate3/generic", "jdbcconfiguration", true);
     }
 
 // ------------------------ INTERFACE METHODS ------------------------
@@ -52,8 +50,7 @@ public class GenericExporterMojo
      *
      * @return String goal's name
      */
-    public String getName()
-    {
+    public String getName() {
         return "hbmtemplate";
     }
 
@@ -62,17 +59,15 @@ public class GenericExporterMojo
     /**
      * @see HibernateExporterMojo#configureExporter(org.hibernate.tool.hbm2x.Exporter)
      */
-    protected Exporter configureExporter( Exporter exporter )
-        throws MojoExecutionException
-    {
-        super.configureExporter( exporter );
+    protected Exporter configureExporter(Exporter exporter)
+            throws MojoExecutionException {
+        super.configureExporter(exporter);
 
-        if ( exporter instanceof GenericExporter )
-        {
+        if (exporter instanceof GenericExporter) {
             GenericExporter ge = (GenericExporter) exporter;
-            ge.setFilePattern( getComponentProperty( "filepattern", "{package-name}/{class-name}.ftl" ) );
-            ge.setForEach( getComponentProperty( "foreach", null ) );
-            ge.setTemplateName( getComponentProperty( "template", null ) );
+            ge.setFilePattern(getComponentProperty("filepattern", "{package-name}/{class-name}.ftl"));
+            ge.setForEach(getComponentProperty("foreach", null));
+            ge.setTemplateName(getComponentProperty("template", null));
         }
 
         return exporter;
@@ -83,23 +78,18 @@ public class GenericExporterMojo
      *
      * @return Exporter
      */
-    protected Exporter createExporter()
-    {
-        String exporterClass = getComponentProperty( "exporterclass" );
-        if ( exporterClass != null )
-        {
-            Exporter exporter = (Exporter) HibernateUtils.getClass( exporterClass );
-            if ( exporter != null )
-            {
-                getLog().info( "Using exporter class " + exporterClass );
+    protected Exporter createExporter() {
+        String exporterClass = getComponentProperty("exporterclass");
+        if (exporterClass != null) {
+            Exporter exporter = (Exporter) HibernateUtils.getClass(exporterClass);
+            if (exporter != null) {
+                getLog().info("Using exporter class " + exporterClass);
                 return exporter;
-            }
-            else
-            {
-                getLog().error( "Could not create custom exporter class: " + exporterClass );
+            } else {
+                getLog().error("Could not create custom exporter class: " + exporterClass);
             }
         }
-        getLog().info( "Using exporter class org.hibernate.tool.hbm2x.GenericExporter" );
+        getLog().info("Using exporter class org.hibernate.tool.hbm2x.GenericExporter");
         return new GenericExporter();
     }
 }

@@ -30,16 +30,13 @@ import org.hibernate.tool.hbm2x.POJOExporter;
  * @phase generate-sources
  * @execute phase="process-resources"
  */
-public class Hbm2JavaGeneratorMojo
-    extends HibernateExporterMojo
-{
+public class Hbm2JavaGeneratorMojo extends HibernateExporterMojo {
     /**
      * Default constructor.
      */
-    public Hbm2JavaGeneratorMojo()
-    {
-        addDefaultComponent( "target/hibernate3/generated-sources", "configuration", false );
-        addDefaultComponent( "target/hibernate3/generated-sources", "annotationconfiguration", true );
+    public Hbm2JavaGeneratorMojo() {
+        addDefaultComponent("target/hibernate3/generated-sources", "configuration", false);
+        addDefaultComponent("target/hibernate3/generated-sources", "annotationconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------
@@ -49,23 +46,22 @@ public class Hbm2JavaGeneratorMojo
      *
      * @return String goal's name
      */
-    public String getName()
-    {
+    public String getName() {
         return "hbm2java";
     }
 
     /**
      * @see HibernateExporterMojo#configureExporter(org.hibernate.tool.hbm2x.Exporter)
      */
-    protected Exporter configureExporter( Exporter exp )
-        throws MojoExecutionException
-    {
-        super.getComponent().setCompileSourceRoot( true );
-        POJOExporter exporter = (POJOExporter) super.configureExporter( exp );
-        
+    protected Exporter configureExporter(Exporter exp) throws MojoExecutionException {
+
+        super.getComponent().setCompileSourceRoot(true);
+
+        POJOExporter exporter = (POJOExporter) super.configureExporter(exp);
+
         // now set the extra properties for the POJO Exporter
-        exporter.getProperties().setProperty( "ejb3", getComponentProperty( "ejb3", "false" ) );
-        exporter.getProperties().setProperty( "jdk5", getComponentProperty( "jdk5", "false" ) );
+        exporter.getProperties().setProperty("ejb3", getComponentProperty("ejb3", "false"));
+        exporter.getProperties().setProperty("jdk5", getComponentProperty("jdk5", "false"));
         return exporter;
     }
 
@@ -74,8 +70,7 @@ public class Hbm2JavaGeneratorMojo
      *
      * @return POJOExporter
      */
-    protected Exporter createExporter()
-    {
-        return new POJOExporter();
+    protected Exporter createExporter() {
+        return buildProcessorAwareExporter( new POJOExporter());
     }
 }

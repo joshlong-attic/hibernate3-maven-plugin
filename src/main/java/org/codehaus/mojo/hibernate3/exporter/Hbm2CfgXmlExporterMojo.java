@@ -16,10 +16,10 @@ package org.codehaus.mojo.hibernate3.exporter;
  * limitations under the License.
  */
 
+import org.apache.maven.plugin.MojoExecutionException;
+import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
 import org.hibernate.tool.hbm2x.Exporter;
 import org.hibernate.tool.hbm2x.HibernateConfigurationExporter;
-import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Generates hibernate.cfg.xml
@@ -30,15 +30,13 @@ import org.apache.maven.plugin.MojoExecutionException;
  * @execute phase="generate-resources"
  */
 public class Hbm2CfgXmlExporterMojo
-    extends HibernateExporterMojo
-{
+        extends HibernateExporterMojo {
     /**
      * Default constructor.
      */
-    public Hbm2CfgXmlExporterMojo()
-    {
-        addDefaultComponent( "target/hibernate3/generated-mappings", "jdbcconfiguration", false );
-        addDefaultComponent( "target/hibernate3/generated-mappings", "jdbcconfiguration", true );
+    public Hbm2CfgXmlExporterMojo() {
+        addDefaultComponent("target/hibernate3/generated-mappings", "jdbcconfiguration", false);
+        addDefaultComponent("target/hibernate3/generated-mappings", "jdbcconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------
@@ -48,19 +46,17 @@ public class Hbm2CfgXmlExporterMojo
      *
      * @return String goal's name
      */
-    public String getName()
-    {
+    public String getName() {
         return "hbm2cfgxml";
     }
 
     /**
      * @see HibernateExporterMojo#configureExporter(org.hibernate.tool.hbm2x.Exporter)
      */
-    protected Exporter configureExporter( Exporter exporter )
-        throws MojoExecutionException
-    {
-        HibernateConfigurationExporter hce = (HibernateConfigurationExporter) super.configureExporter( exporter );
-        hce.getProperties().setProperty( "ejb3", getComponentProperty( "ejb3", "false" ) );
+    protected Exporter configureExporter(Exporter exporter)
+            throws MojoExecutionException {
+        HibernateConfigurationExporter hce = (HibernateConfigurationExporter) super.configureExporter(exporter);
+        hce.getProperties().setProperty("ejb3", getComponentProperty("ejb3", "false"));
         return hce;
     }
 
@@ -69,8 +65,7 @@ public class Hbm2CfgXmlExporterMojo
      *
      * @return HibernateConfigurationExporter
      */
-    protected Exporter createExporter()
-    {
+    protected Exporter createExporter() {
         return new HibernateConfigurationExporter();
     }
 }

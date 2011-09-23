@@ -16,9 +16,9 @@ package org.codehaus.mojo.hibernate3.exporter;
  * limitations under the License.
  */
 
+import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
 import org.hibernate.tool.hbm2x.Exporter;
 import org.hibernate.tool.hbm2x.HibernateMappingExporter;
-import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
 
 /**
  * Generates a set of hbm.xml files
@@ -29,15 +29,13 @@ import org.codehaus.mojo.hibernate3.HibernateExporterMojo;
  * @execute phase="generate-resources"
  */
 public class Hbm2HbmXmlExporterMojo
-    extends HibernateExporterMojo
-{
+        extends HibernateExporterMojo {
     /**
      * Default constructor.
      */
-    public Hbm2HbmXmlExporterMojo()
-    {
-        addDefaultComponent( "target/hibernate3/generated-mappings", "jdbcconfiguration", false );
-        addDefaultComponent( "target/hibernate3/generated-mappings", "jdbcconfiguration", true );
+    public Hbm2HbmXmlExporterMojo() {
+        addDefaultComponent("target/hibernate3/generated-mappings", "jdbcconfiguration", false);
+        addDefaultComponent("target/hibernate3/generated-mappings", "jdbcconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------
@@ -47,8 +45,7 @@ public class Hbm2HbmXmlExporterMojo
      *
      * @return String goal's name
      */
-    public String getName()
-    {
+    public String getName() {
         return "hbm2hbmxml";
     }
 
@@ -57,8 +54,7 @@ public class Hbm2HbmXmlExporterMojo
      *
      * @return HibernateMappingExporter
      */
-    protected final Exporter createExporter()
-    {
+    protected final Exporter createExporter() {
         return new HibernateMappingExporter();
     }
 }

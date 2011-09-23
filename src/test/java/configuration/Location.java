@@ -4,10 +4,9 @@ import java.io.Serializable;
 import java.util.Locale;
 
 public class Location
-    implements Serializable
-{
+        implements Serializable {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
 
@@ -23,15 +22,13 @@ public class Location
 
     private String description;
 
-    public boolean equals( Object other )
-    {
+    public boolean equals(Object other) {
         Location l = (Location) other;
-        return l.getCity().equals( city ) && l.getStreetName().equals( streetName ) &&
-            l.getCountryCode().equals( countryCode ) && l.getStreetNumber() == streetNumber;
+        return l.getCity().equals(city) && l.getStreetName().equals(streetName) &&
+                       l.getCountryCode().equals(countryCode) && l.getStreetNumber() == streetNumber;
     }
 
-    public int hashCode()
-    {
+    public int hashCode() {
         return streetName.hashCode();
     }
 
@@ -40,8 +37,7 @@ public class Location
      *
      * @return String
      */
-    public String getCity()
-    {
+    public String getCity() {
         return city;
     }
 
@@ -50,8 +46,7 @@ public class Location
      *
      * @param city The city to set
      */
-    public void setCity( String city )
-    {
+    public void setCity(String city) {
         this.city = city;
     }
 
@@ -60,8 +55,7 @@ public class Location
      *
      * @return String
      */
-    public String getCountryCode()
-    {
+    public String getCountryCode() {
         return countryCode;
     }
 
@@ -70,8 +64,7 @@ public class Location
      *
      * @param countryCode The countryCode to set
      */
-    public void setCountryCode( String countryCode )
-    {
+    public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
     }
 
@@ -80,8 +73,7 @@ public class Location
      *
      * @return String
      */
-    public String getDescription()
-    {
+    public String getDescription() {
         return description;
     }
 
@@ -90,8 +82,7 @@ public class Location
      *
      * @param description The description to set
      */
-    public void setDescription( String description )
-    {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -100,8 +91,7 @@ public class Location
      *
      * @return Locale
      */
-    public Locale getLocale()
-    {
+    public Locale getLocale() {
         return locale;
     }
 
@@ -110,8 +100,7 @@ public class Location
      *
      * @param locale The locale to set
      */
-    public void setLocale( Locale locale )
-    {
+    public void setLocale(Locale locale) {
         this.locale = locale;
     }
 
@@ -120,8 +109,7 @@ public class Location
      *
      * @return String
      */
-    public String getStreetName()
-    {
+    public String getStreetName() {
         return streetName;
     }
 
@@ -130,8 +118,7 @@ public class Location
      *
      * @param streetName The streetName to set
      */
-    public void setStreetName( String streetName )
-    {
+    public void setStreetName(String streetName) {
         this.streetName = streetName;
     }
 
@@ -140,8 +127,7 @@ public class Location
      *
      * @return int
      */
-    public int getStreetNumber()
-    {
+    public int getStreetNumber() {
         return streetNumber;
     }
 
@@ -150,8 +136,7 @@ public class Location
      *
      * @param streetNumber The streetNumber to set
      */
-    public void setStreetNumber( int streetNumber )
-    {
+    public void setStreetNumber(int streetNumber) {
         this.streetNumber = streetNumber;
     }
 }

@@ -261,11 +261,9 @@ public abstract class HibernateExporterMojo
     protected void handleProcessor() throws Throwable {
         String clzzNameForProcessor = getComponentProperty("processor", NoOpGeneratedClassDefinitionProcessor.class.getName());
 
-
         if (!StringUtils.isEmpty(clzzNameForProcessor)) {
             // then create the class
             try {
-
 
                 Class<? extends GeneratedClassDefinitionProcessor> processorClazz =
                         (Class<? extends GeneratedClassDefinitionProcessor>) Class.forName(clzzNameForProcessor);
@@ -274,43 +272,31 @@ public abstract class HibernateExporterMojo
 
                 GeneratedClassDefinitionProcessor processObj = processorClazz.newInstance();
 
-                File file = getExporterOutputDir();
-                /*File javaFiles[] = file.listFiles(new FileFilter() {
-                    public boolean accept(File file) {
-                        return (file.getName().toLowerCase().endsWith(".java"));
-                    }
-                });*/
-
-                Iterator<File>  javaFiles=FileUtils.iterateFiles( getExporterOutputDir(), new String[]{".java"}, true) ;
+                Iterator<File> javaFiles = FileUtils.iterateFiles(getExporterOutputDir(), new String[]{"java"}, true);
 
 
-                System.out.println( " output: "+ file.getAbsolutePath() + ":" );
-
-
-
-                while(javaFiles.hasNext()){
+                while (javaFiles.hasNext()) {
                     File f = javaFiles.next();
-
-                    System.out.println("processing file "+ f.getAbsolutePath());
-
-                    InputStream inputStream = null;
-                    OutputStream outputStream = null;
+                    Reader reader = null;
+                    Writer writer = null;
                     try {
-                        inputStream = new FileInputStream(f);
-                        outputStream = new FileOutputStream(f);
-                        String contents = IOUtils.toString(inputStream);
+                        reader = new BufferedReader( new FileReader(f));
+
+                        String contents = IOUtils.toString(reader);
+
+                        getLog().info("contents:"+ contents);
+                        writer = new FileWriter(f);
 
                         String result = processObj.processClass(f, contents);
+                        getLog().info("just processed " + f.getAbsolutePath() + ":" + result);
 
-                        getLog().debug("just processed " + f.getAbsolutePath() + ":" + result);
-
-                        IOUtils.write(result, outputStream);
+                        IOUtils.write(result, writer);
                     } finally {
-                        if (null != inputStream) {
-                            IOUtils.closeQuietly(inputStream);
+                        if (null != reader) {
+                            IOUtils.closeQuietly(reader);
                         }
-                        if (null != outputStream) {
-                            IOUtils.closeQuietly(outputStream);
+                        if (null != writer) {
+                            IOUtils.closeQuietly(writer);
                         }
                     }
                 }

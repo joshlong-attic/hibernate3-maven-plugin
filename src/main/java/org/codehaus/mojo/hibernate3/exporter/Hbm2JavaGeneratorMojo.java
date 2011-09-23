@@ -58,7 +58,7 @@ public class Hbm2JavaGeneratorMojo extends HibernateExporterMojo {
         super.getComponent().setCompileSourceRoot(true);
 
         POJOExporter exporter = (POJOExporter) super.configureExporter(exp);
-
+        getLog().info("exporter is of type : "+ exporter.getClass().getName());
         // now set the extra properties for the POJO Exporter
         exporter.getProperties().setProperty("ejb3", getComponentProperty("ejb3", "false"));
         exporter.getProperties().setProperty("jdk5", getComponentProperty("jdk5", "false"));

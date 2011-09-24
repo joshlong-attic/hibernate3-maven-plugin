@@ -26,11 +26,14 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.hibernate3.configuration.ComponentConfiguration;
 import org.codehaus.mojo.hibernate3.exporter.Component;
-import org.codehaus.mojo.hibernate3.processor.GeneratedClassDefinitionProcessor;
-import org.codehaus.mojo.hibernate3.processor.NoOpGeneratedClassDefinitionProcessor;
+import org.codehaus.mojo.hibernate3.processor.CompositeProcessor;
+import org.codehaus.mojo.hibernate3.processor.GeneratedClassProcessor;
+import org.codehaus.mojo.hibernate3.processor.ProcessorUtil;
+import org.codehaus.mojo.hibernate3.processor.implementations.NoOpProcessor;
+import org.hibernate.exception.ExceptionUtils;
 import org.hibernate.tool.hbm2x.Exporter;
-import org.hibernate.tool.hbm2x.StringUtils;
 import org.springframework.aop.framework.ProxyFactoryBean;
+import org.springframework.util.StringUtils;
 
 import java.io.*;
 import java.lang.reflect.Method;
@@ -258,37 +261,44 @@ public abstract class HibernateExporterMojo
         exporter.start();
     }
 
+    protected void handleComposites() throws Throwable {
+        String componentProperty = getComponentProperty("composite-processors", "");
+        if (StringUtils.hasText(componentProperty)) {
+            Class<? extends CompositeProcessor> clzz =( Class<? extends CompositeProcessor>) Class.forName(componentProperty);;
+            CompositeProcessor cp =clzz.newInstance() ;
+            handleProcessor( cp.getProcessors());
+        }
+    }
+
     protected void handleProcessor() throws Throwable {
-        String clzzNameForProcessor = getComponentProperty("processor", NoOpGeneratedClassDefinitionProcessor.class.getName());
+        String clzzNameForProcessor = getComponentProperty("processors", NoOpProcessor.class.getName());
+        if (StringUtils.hasText(clzzNameForProcessor)) {
+            List<GeneratedClassProcessor> processors = ProcessorUtil.buildProcessorsFromProperty(",", clzzNameForProcessor);
+            handleProcessor(processors);
+        }
+    }
 
-        if (!StringUtils.isEmpty(clzzNameForProcessor)) {
-            // then create the class
-            try {
+    protected void handleProcessor(List<GeneratedClassProcessor> processors) throws Throwable {
+        try {
+            for (GeneratedClassProcessor processor : processors) {
 
-                Class<? extends GeneratedClassDefinitionProcessor> processorClazz =
-                        (Class<? extends GeneratedClassDefinitionProcessor>) Class.forName(clzzNameForProcessor);
-
-                getLog().debug("using processor class " + processorClazz);
-
-                GeneratedClassDefinitionProcessor processObj = processorClazz.newInstance();
+                getLog().info("Using " + processor.getClass().getName());
 
                 Iterator<File> javaFiles = FileUtils.iterateFiles(getExporterOutputDir(), new String[]{"java"}, true);
-
 
                 while (javaFiles.hasNext()) {
                     File f = javaFiles.next();
                     Reader reader = null;
                     Writer writer = null;
                     try {
-                        reader = new BufferedReader( new FileReader(f));
+                        reader = new BufferedReader(new FileReader(f));
 
                         String contents = IOUtils.toString(reader);
 
-                        getLog().info("contents:"+ contents);
                         writer = new FileWriter(f);
 
-                        String result = processObj.processClass(f, contents);
-                        getLog().info("just processed " + f.getAbsolutePath() + ":" + result);
+                        String result = processor.processClass(f, contents);
+                        getLog().info("processed " + f.getAbsolutePath() + ".");
 
                         IOUtils.write(result, writer);
                     } finally {
@@ -300,12 +310,11 @@ public abstract class HibernateExporterMojo
                         }
                     }
                 }
-
-            } catch (Exception e) {
-                getLog().error("couldn't load and delegate to the processor class configured, " + clzzNameForProcessor + ".");
             }
-        } else {
-            getLog().error("No processor configured, aborting.");
+
+        } catch (Exception e) {
+            getLog().error("couldn't load and delegate to the processor classes configured. " + ExceptionUtils.getFullStackTrace(e));
+
         }
     }
 
@@ -327,6 +336,7 @@ public abstract class HibernateExporterMojo
                 try {
                     result = method.invoke(delegate, objects);
                     if (method.getName().contains("start")) {
+                        handleComposites();
                         handleProcessor();
                     }
                     return result;

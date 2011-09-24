@@ -1,4 +1,6 @@
-package org.codehaus.mojo.hibernate3.processor;
+package org.codehaus.mojo.hibernate3.processor.implementations;
+
+import org.codehaus.mojo.hibernate3.processor.GeneratedClassProcessor;
 
 import java.io.File;
 
@@ -7,7 +9,7 @@ import java.io.File;
  *
  * @author Josh Long
  */
-public class NoOpGeneratedClassDefinitionProcessor implements GeneratedClassDefinitionProcessor {
+public class NoOpProcessor implements GeneratedClassProcessor {
 
     /**
      * the class definition will simply be written out to the target as it was generaed

@@ -9,6 +9,6 @@ import java.io.File;
  *
  * @author Josh Long
  */
-public interface GeneratedClassDefinitionProcessor {
-    String processClass(File fi, String contents  ) ;
+public interface GeneratedClassProcessor {
+    String processClass(File fi, String contents);
 }

@@ -30,11 +30,19 @@ abstract public class ProcessorUtil {
         return bu.toString().trim();
     }
 
+    public static String insertImportIntoClassDefinition(Class<?> clzz, String body) {
+        return insertImportIntoClassDefinition(clzz.getPackage().getName() +".*"  , body) ;
+    }
     public static String insertImportIntoClassDefinition(String importCode, String body) {
         StringBuffer buffer = new StringBuffer();
         Matcher matcher = pkgImportPattern.matcher(body);
+
+         String importStmt ="import "+importCode  +";" ;
+        if(body.contains(importStmt))
+            return body;
+
         while (matcher.find()) {
-            String replacement = matcher.group(0) + importCode;
+            String replacement = matcher.group(0) +" "+ importStmt + "\n";
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

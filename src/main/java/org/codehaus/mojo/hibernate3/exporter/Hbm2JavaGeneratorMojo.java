@@ -35,8 +35,8 @@ public class Hbm2JavaGeneratorMojo extends HibernateExporterMojo {
      * Default constructor.
      */
     public Hbm2JavaGeneratorMojo() {
-        addDefaultComponent("target/hibernate3/generated-sources", "configuration", false);
-        addDefaultComponent("target/hibernate3/generated-sources", "annotationconfiguration", true);
+        addDefaultComponent("target/generated-sources/hibernate3", "configuration", false);
+        addDefaultComponent("target/generated-sources/hibernate3", "annotationconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------

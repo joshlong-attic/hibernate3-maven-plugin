@@ -26,6 +26,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mojo.hibernate3.configuration.ComponentConfiguration;
 import org.codehaus.mojo.hibernate3.exporter.Component;
+import org.codehaus.mojo.hibernate3.processor.ComponentPropertiesAware;
 import org.codehaus.mojo.hibernate3.processor.CompositeProcessor;
 import org.codehaus.mojo.hibernate3.processor.GeneratedClassProcessor;
 import org.codehaus.mojo.hibernate3.processor.ProcessorUtil;
@@ -165,6 +166,7 @@ public abstract class HibernateExporterMojo
         Component component = new Component();
         component.setName(getName());
         component.setOutputDirectory(outputDirectory);
+        getLog().info("output directory is "+ outputDirectory);
         component.setImplementation(implementation);
         defaultComponents.put(jdk5 ? "jdk15" : "jdk14", component);
     }
@@ -257,8 +259,7 @@ public abstract class HibernateExporterMojo
      * @noinspection unchecked
      */
     protected void doExecute() throws MojoExecutionException {
-        Exporter exporter = configureExporter(createExporter());
-        exporter.start();
+        configureExporter(createExporter()).start();
     }
 
     protected void handleComposites() throws Throwable {
@@ -266,7 +267,7 @@ public abstract class HibernateExporterMojo
         if (StringUtils.hasText(componentProperty)) {
             Class<? extends CompositeProcessor> clzz =( Class<? extends CompositeProcessor>) Class.forName(componentProperty);;
             CompositeProcessor cp =clzz.newInstance() ;
-            handleProcessor( cp.getProcessors());
+            handleProcessor(cp.getProcessors());
         }
     }
 
@@ -278,9 +279,16 @@ public abstract class HibernateExporterMojo
         }
     }
 
+
+    @SuppressWarnings("unchecked")
     protected void handleProcessor(List<GeneratedClassProcessor> processors) throws Throwable {
         try {
             for (GeneratedClassProcessor processor : processors) {
+
+                // make sure the processors have their dependencies ... ugh.
+                if(processor instanceof ComponentPropertiesAware) {
+                    ((ComponentPropertiesAware) processor).setComponentProperties(this.componentProperties);
+                }
 
                 getLog().info("Using " + processor.getClass().getName());
 

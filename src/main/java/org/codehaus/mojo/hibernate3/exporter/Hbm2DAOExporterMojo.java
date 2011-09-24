@@ -34,8 +34,8 @@ public class Hbm2DAOExporterMojo extends Hbm2JavaGeneratorMojo {
      * Default constructor.
      */
     public Hbm2DAOExporterMojo() {
-        addDefaultComponent("target/hibernate3/generated-sources", "configuration", false);
-        addDefaultComponent("target/hibernate3/generated-sources", "annotationconfiguration", true);
+        addDefaultComponent("target/generated-sources/hibernate3", "configuration", false);
+        addDefaultComponent("target/generated-sources/hibernate3", "annotationconfiguration", true);
     }
 
 // --------------------- Interface ExporterMojo ---------------------

@@ -1,20 +1,19 @@
-
 /*
- *
- * Copyright 2011 Josh Long
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+*
+* Copyright 2011 Josh Long
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 package org.codehaus.mojo.hibernate3.processor;
 
 
@@ -34,7 +33,7 @@ abstract public class ProcessorUtil {
     private static Pattern pkgImportPattern = Pattern.compile("package(.*?);");
 
     // for us to do our dirty work, we need to remove spaces...
-    private static String compressCode(String in) {
+    public static String compressCode(String in) {
         String matches[] = wsPattern.split(in);
         StringBuffer bu = new StringBuffer();
         for (String s : matches) {
@@ -46,18 +45,20 @@ abstract public class ProcessorUtil {
     }
 
     public static String insertImportIntoClassDefinition(Class<?> clzz, String body) {
-        return insertImportIntoClassDefinition(clzz.getPackage().getName() +".*"  , body) ;
+        return insertImportIntoClassDefinition(clzz.getPackage().getName() + ".*", body);
     }
+
     public static String insertImportIntoClassDefinition(String importCode, String body) {
         StringBuffer buffer = new StringBuffer();
         Matcher matcher = pkgImportPattern.matcher(body);
 
-         String importStmt ="import "+importCode  +";" ;
-        if(body.contains(importStmt))
+        String importStmt = "import " + importCode + ";";
+        if (body.contains(importStmt)) {
             return body;
+        }
 
         while (matcher.find()) {
-            String replacement = matcher.group(0) +" "+ importStmt + "\n";
+            String replacement = matcher.group(0) + " " + importStmt + "\n";
             matcher.appendReplacement(buffer, replacement);
         }
         matcher.appendTail(buffer);

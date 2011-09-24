@@ -29,13 +29,18 @@ import java.io.File;
  */
 public class DateModifiedProcessor implements GeneratedClassProcessor {
 
-    private String dateModified = "   private java.util.Date dateModified;\n" +
-                                          "   @Temporal(TemporalType.TIMESTAMP) @Column(name=\"date_modified\", nullable=false, length=10)\n" +
-                                          "   public Date getDateModified() { return this.dateModified; }\n" +
-                                          "   public void setDateModified(Date dc) { this.dateModified =dc; }\n";
+    private String dateModified = ProcessorUtil.compressCode("   private Date dateModified;\n" +
+                                                                     "   @Temporal(TemporalType.TIMESTAMP) @Column(name=\"date_modified\", nullable=false, length=10)\n" +
+                                                                     "   public Date getDateModified() { return this.dateModified; }\n" +
+                                                                     "   public void setDateModified(Date dc) { this.dateModified =dc; }\n");
 
     @Override
     public String processClass(File fi, String contents) {
-        return ProcessorUtil.insertInClassDefinition(contents, dateModified);
+
+
+        if (!ProcessorUtil.compressCode(contents).contains("Date dateModified")) {
+            return ProcessorUtil.insertInClassDefinition(contents, dateModified);
+        }
+        return contents;
     }
 }

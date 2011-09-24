@@ -28,14 +28,18 @@ import java.io.File;
  */
 public class DateCreatedProcessor implements GeneratedClassProcessor {
 
-    private String dateCreatedJava = "   private java.util.Date dateCreated ; " +
+    private String dateCreatedJava =ProcessorUtil.compressCode( "   private java.util.Date dateCreated ; " +
                                              "   @Temporal(TemporalType.TIMESTAMP) @Column(name=\"date_created\", nullable=false, length=10) " +
                                              "   public Date getDateCreated() { return this.dateCreated; } " +
-                                             "   public void setDateCreated(Date dc) { this.dateCreated = dc; }";
+                                             "   public void setDateCreated(Date dc) { this.dateCreated = dc; }");
 
 
     @Override
     public String processClass(File fi, String contents) {
-        return ProcessorUtil.insertInClassDefinition(contents, dateCreatedJava);
+
+        if (!ProcessorUtil.compressCode(contents).contains("Date dateCreated"))
+            return ProcessorUtil.insertInClassDefinition(contents, dateCreatedJava);
+
+        return contents;
     }
 }

@@ -23,13 +23,16 @@ import org.codehaus.mojo.hibernate3.processor.ProcessorUtil;
 import java.io.File;
 
 public class VersionProcessor implements GeneratedClassProcessor {
-    private String version = "\n" +
+    private String version = ProcessorUtil.compressCode("\n" +
                                      "    private java.lang.Long version;\n" +
                                      "     @javax.persistence.Version   public java.lang.Long getVersion() { return version; }\n" +
-                                     "    public void setVersion(java.lang.Long value) { this.version = value; }\n\n";
+                                     "    public void setVersion(java.lang.Long value) { this.version = value; }\n\n");
 
     @Override
     public String processClass(File fi, String contents) {
+        if(!ProcessorUtil.compressCode(contents).contains("Long version"))
         return ProcessorUtil.insertInClassDefinition(contents, this.version);
+
+        return contents;
     }
 }

@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -12,7 +11,7 @@
     <artifactId>hibernate3-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <name>Hibernate3 Maven Plugin</name>
-    <version>2.4-SNAPSHOT</version>
+    <version>2.3.1-SNAPSHOT</version>
     <description>Maven plugin based on the hibernate-tools project.</description>
     <prerequisites>
         <maven>2.0.6</maven>
@@ -26,7 +25,7 @@
         </dependency>
 
         <dependency>
-            <optional>true</optional>
+
             <scope>compile</scope>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
@@ -191,19 +190,10 @@
             </dependencies>
         </profile>
     </profiles>
-    <distributionManagement>
-        <repository>
-            <id>repo</id>
-            <url>https://github.com/joshlong/maven-repository/raw/master/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshot-repo</id>
-            <url>https://github.com/joshlong/maven-repository/raw/master/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
     <scm>
         <connection>scm:git:git@github.com:joshlong/hibernate3-maven-plugin.git</connection>
         <url>scm:git:git@github.com:joshlong/hibernate3-maven-plugin.git</url>
         <developerConnection>scm:git:git@github.com:joshlong/hibernate3-maven-plugin.git</developerConnection>
     </scm>
 </project>
+

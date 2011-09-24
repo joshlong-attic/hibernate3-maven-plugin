@@ -194,6 +194,13 @@
         <connection>scm:git:git@github.com:joshlong/hibernate3-maven-plugin.git</connection>
         <url>scm:git:git@github.com:joshlong/hibernate3-maven-plugin.git</url>
         <developerConnection>scm:git:git@github.com:joshlong/hibernate3-maven-plugin.git</developerConnection>
-    </scm>
+    </scm>  
+
+  <distributionManagement>
+  	<repository>
+  		<id>maven-repository</id>
+  		<url>file:///home/jlong/maven-repository/maven-repository/releases/</url>
+  	</repository>
+  </distributionManagement>
 </project>
 

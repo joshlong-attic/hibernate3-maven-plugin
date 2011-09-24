@@ -106,7 +106,7 @@ abstract public class ProcessorUtil {
     }
 
     /**
-     * Adds a defintion to a method right before the closing brace in the file. This assumes there's only one class definition in the file, of course.
+     * Adds a definition to a method right before the closing brace in the file. This assumes there's only one class definition in the file, of course.
      *
      * @param entityClassStringDefinition the definition of the class
      * @param addition                    the code that should be inserted into the class

@@ -18,8 +18,11 @@ package org.codehaus.mojo.hibernate3.processor.implementations;
 
 
 import org.codehaus.mojo.hibernate3.processor.GeneratedClassProcessor;
+import org.codehaus.mojo.hibernate3.processor.ProcessorUtil;
 
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Makes the @Id column generated in the code also have a matching GeneratedValue annotation
@@ -28,20 +31,25 @@ import java.io.File;
  */
 public class GeneratedValueIdProcessor implements GeneratedClassProcessor {
 
-
-    static public void main(String args[]) throws Throwable {
-        String bad = "package a.b.c; \n import cat.dog.*; \npublic class Cat { \n              " +
-                             "        private int id;            " +
-                             "}";
-
-
-    }
+    private String generatedValue = " @javax.persistence.GeneratedValue(strategy = javax.persistence.GenerationType.AUTO) ";
 
     @Override
     public String processClass(File fi, String contents) {
-        //   String compressedBody =  (ProcessorUtil.insertImportIntoClassDefinition( contents ,  (bad)));
+         return contents.replace("@Id",  "@Id " + generatedValue + " "  );
+    }
 
-        return contents;
+    static public void main(String[] a) throws Throwable {
+
+        GeneratedValueIdProcessor generatedValueIdProcessor = new GeneratedValueIdProcessor();
+        String result = generatedValueIdProcessor.processClass(null, " public class Customer {\n  @Id \n" +
+                                                                             "    \n" +
+                                                                             "    @Column(name=\"idPattern\", unique=true, nullable=false)\n" +
+                                                                             "     public Long getId () {\n" +
+                                                                             "        return this.idPattern;\n" +
+                                                                             "    } }\n" +
+                                                                             "     ");
+
+        System.out.println("result: " + result);
 
     }
 }

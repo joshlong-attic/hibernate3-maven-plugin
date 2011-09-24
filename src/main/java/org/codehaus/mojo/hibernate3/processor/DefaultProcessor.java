@@ -39,8 +39,8 @@ public class DefaultProcessor implements CompositeProcessor {
                                         DateModifiedProcessor.class,
                                         VersionProcessor.class,
                                         GeneratedValueIdProcessor.class,
-                                        NonPrimitiveIdProcessor.class,
-                                        CacheProcessor.class
+                                        NonPrimitiveIdProcessor.class//,
+//                                        CacheProcessor.class
         };
         for (Class c : processorsArr) {
             clzzNames.add(c.getName());

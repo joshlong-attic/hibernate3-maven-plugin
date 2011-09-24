@@ -47,7 +47,6 @@ public class DefaultProcessor implements CompositeProcessor {
         }
 
         String cds = StringUtils.arrayToCommaDelimitedString(clzzNames.toArray());
-        System.out.println(cds);
         this.processors = ProcessorUtil.buildProcessorsFromProperty(",", cds);
     }
 

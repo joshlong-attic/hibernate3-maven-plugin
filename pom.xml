@@ -18,7 +18,7 @@
     </prerequisites>
     <dependencies>
         <dependency>
-            <optional>true</optional>
+            
             <scope>compile</scope>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -32,33 +32,33 @@
             <version>2.2</version>
         </dependency>
         <dependency>
-            <optional>true</optional>
+            
             <scope>compile</scope>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
             <version>3.0.6.RELEASE</version>
         </dependency>
         <dependency>
-            <optional>true</optional>
+            
             <scope>compile</scope>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.0.1</version>
         </dependency>
         <dependency>
-            <optional>true</optional>
+            
             <scope>compile</scope>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-tools</artifactId>
         </dependency>
         <dependency>
-            <optional>true</optional>
+            
             <scope>compile</scope>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
         </dependency>
         <dependency>
-            <optional>true</optional>
+
             <scope>compile</scope>
             <groupId>org.codehaus.mojo.hibernate3</groupId>
             <artifactId>maven-hibernate3-api</artifactId>
@@ -66,19 +66,19 @@
         </dependency>
         <dependency>
             <scope>compile</scope>
-            <optional>true</optional>
+            
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
         </dependency>
         <dependency>
             <scope>compile</scope>
-            <optional>true</optional>
+            
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-project</artifactId>
         </dependency>
         <dependency>
             <scope>compile</scope>
-            <optional>true</optional>
+            
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
         </dependency>
@@ -86,7 +86,7 @@
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.0-api</artifactId>
             <version>1.0.0.Final</version>
-            <optional>true</optional>
+            
             <scope>compile</scope>
         </dependency>
         <!-- <dependency>
@@ -101,19 +101,19 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <optional>true</optional>
+            
             <groupId>hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
         </dependency>
         <!-- <dependency>
-            <optional>true</optional>
+            
             <groupId>org.hibernate</groupId>
             <artifactId>ejb3-persistence</artifactId>
             <scope>test</scope>
         </dependency>-->
         <dependency>
-            <optional>true</optional>
+            
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
             <scope>test</scope>

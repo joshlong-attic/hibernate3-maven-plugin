@@ -199,7 +199,7 @@
   <distributionManagement>
   	<repository>
   		<id>maven-repository</id>
-  		<url>file:///home/jlong/maven-repository/maven-repository/releases/</url>
+  		<url>file:///home/jlong/maven-repository/releases/</url>
   	</repository>
   </distributionManagement>
 </project>
